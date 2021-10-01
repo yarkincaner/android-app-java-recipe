@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyRecipes</string>
+
+    <!--
+        activity_login
+    -->
+    <string name="login_editText_email">Email</string>
+    <string name="login_editText_password">Şifre</string>
+    <string name="login_button_login">GİRİŞ YAP</string>
+    <string name="login_textView_or">Veya</string>
+    <string name="login_button_signup">KAYDOL</string>
+
+    <!--
+        bottom_nav_bar
+    -->
+    <string name="bottom_nav_bar_categories">Kategoriler</string>
+    <string name="bottom_nav_bar_random">Rastgele</string>
+
+    <!--
+        toolbar_menu
+    -->
+    <string name="toolbar_menu_logout">Çıkış yap</string>
+
+    <!--
+        activity_register
+    -->
+    <string name="register_editText_name">İsim</string>
+    <string name="register_editText_surname">Soyisim</string>
+    <string name="register_editText_username">Kullanıcı adı</string>
+    <string name="register_button_save">KAYDET</string>
+
+    <!--
+        activity_sign_up
+    -->
+    <string name="signup_editText_email">Email</string>
+    <string name="signup_editText_password">Şifre</string>
+    <string name="signup_editText_confirmPassword">Şifre tekrar</string>
+    <string name="signup_textView_error">Şifreler aynı değil!</string>
+    <string name="signup_button_signup">KAYDOL</string>
+
+    <!--
+        fragment_add_recipe
+    -->
+    <string name="fragment_add_recipe_editText_title">Başlık</string>
+    <string name="fragment_add_recipe_editText_description">Açıklama</string>
+    <string name="fragment_add_recipe_editText_recipe">Tarifinizi buraya giriniz...</string>
+    <string name="fragment_add_recipe_button_cancel">İPTAL</string>
+    <string name="fragment_add_recipe_button_save">KAYDET</string>
+
+    <!--
+        fragment_dialog_add_category
+    -->
+    <string name="fragment_dialog_add_category_textView_title">Kategori ekle</string>
+    <string name="fragment_dialog_add_category_editText_name">Kategori İsmi</string>
+
+    <!--
+        AddRecipeActivity Toast
+    -->
+    <string name="addRecipeActivity_toast_saved">Tarif kaydedildi!</string>
+    <string name="addRecipeActivity_toast_imageNotDetected">Tarifiniz fotoğrafını çekmelisiniz!</string>
+</resources>
