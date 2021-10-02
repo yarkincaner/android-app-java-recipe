@@ -52,6 +52,12 @@ public class RecipesFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mViewModel.clearArray();
+    }
+
     private Observer<ArrayList<Recipe>> recipeListUpdateObserver = new Observer<ArrayList<Recipe>>() {
         @Override
         public void onChanged(ArrayList<Recipe> recipes) {
