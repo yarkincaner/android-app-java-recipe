@@ -72,6 +72,10 @@ public class RecipesViewModel extends ViewModel implements OnCompleteListener<Qu
         }
     }
 
+    public void clearArray() {
+        recipes.clear();
+    }
+
     @Override
     public void onComplete(@NonNull Task<QuerySnapshot> task) {
         if (task.isSuccessful()) {
