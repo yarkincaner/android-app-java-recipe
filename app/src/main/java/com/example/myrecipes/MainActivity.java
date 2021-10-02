@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.myrecipes.ui.HomeFragment;
+import com.example.myrecipes.ui.HomeViewModel;
 import com.example.myrecipes.ui.RecipesFragment;
 import com.example.myrecipes.ui.dialogs.DialogAddCategoryFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -56,11 +59,8 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.bottom_nav_bar_home, R.id.bottom_nav_bar_random
         ).build();
-//        findNavController works for fragment but doesn't work for FragmentContainerView
-//        NavController navController = Navigation.findNavController(this, R.id.main_nav_host_fragment);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
@@ -93,5 +93,4 @@ public class MainActivity extends AppCompatActivity {
     public void addRecipe(View view) {
         System.out.println("MainActivity Add Recipe");
     }
-
 }

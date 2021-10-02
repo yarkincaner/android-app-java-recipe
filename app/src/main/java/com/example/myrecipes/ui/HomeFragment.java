@@ -2,6 +2,8 @@ package com.example.myrecipes.ui;
 
 import androidx.lifecycle.Observer;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
+
     FirebaseFirestore db;
     ArrayList<Category> categories;
 
@@ -37,10 +40,11 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
         this.setHasOptionsMenu(true);
+
         db = FirebaseFirestore.getInstance();
         categories = new ArrayList<>();
-
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_home);
+
         viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         viewModel.getUserLiveData().observe(getViewLifecycleOwner(), categoryListUpdateObserver);
         return view;
@@ -49,9 +53,11 @@ public class HomeFragment extends Fragment {
     private Observer<ArrayList<Category>> categoryListUpdateObserver = new Observer<ArrayList<Category>>() {
         @Override
         public void onChanged(ArrayList<Category> categories) {
-            homeRvAdapter = new Category_RvAdapter(requireActivity(), categories);
-            recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
-            recyclerView.setAdapter(homeRvAdapter);
+            if (categories.size() > 0) {
+                homeRvAdapter = new Category_RvAdapter(requireActivity(), categories);
+                recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+                recyclerView.setAdapter(homeRvAdapter);
+            }
         }
     };
 }

@@ -3,6 +3,7 @@ package com.example.myrecipes.adapters;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     Activity context;
     ArrayList<Recipe> recipes;
+    String categoryTitle;
 
     class Recipe_RvAdapter_ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -43,9 +45,10 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public Recipes_RvAdapter(Activity context, ArrayList<Recipe> recipes) {
+    public Recipes_RvAdapter(Activity context, ArrayList<Recipe> recipes, String categoryTitle) {
         this.context = context;
         this.recipes = recipes;
+        this.categoryTitle = categoryTitle;
     }
 
     @NonNull
@@ -58,6 +61,8 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+
         Recipe recipe = recipes.get(position);
         Recipe_RvAdapter_ViewHolder viewHolder = (Recipe_RvAdapter_ViewHolder) holder;
 
@@ -80,8 +85,11 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         viewHolder.title.setText(recipe.getTitle());
         viewHolder.description.setText(recipe.getDescription());
 
+        Bundle bundle = new Bundle();
+        bundle.putString("categoryTitle", categoryTitle);
+        bundle.putString("recipeTitle", recipe.getTitle());
         holder.itemView.setOnClickListener(
-                Navigation.createNavigateOnClickListener(R.id.action_recipesFragment_to_recipeFragment)
+                Navigation.createNavigateOnClickListener(R.id.action_recipesFragment_to_recipeFragment, bundle)
         );
     }
 
