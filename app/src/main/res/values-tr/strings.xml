@@ -59,4 +59,14 @@
     -->
     <string name="addRecipeActivity_toast_saved">Tarif kaydedildi!</string>
     <string name="addRecipeActivity_toast_imageNotDetected">Tarifiniz fotoğrafını çekmelisiniz!</string>
+
+    <!--
+        refresh_action
+    -->
+    <string name="refresh_action_menu_refresh">Yenile</string>
+
+    <!--
+        random_fragment
+    -->
+    <string name="random_fragment_title">Rastgele tarif için kategori filtreleyebilirsiniz</string>
 </resources>

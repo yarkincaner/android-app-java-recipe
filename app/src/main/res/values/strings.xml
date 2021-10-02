@@ -58,4 +58,14 @@
     -->
     <string name="addRecipeActivity_toast_saved">Recipe saved successfully!</string>
     <string name="addRecipeActivity_toast_imageNotDetected">You have to take photo of you recipe!</string>
+
+    <!--
+        refresh_action
+    -->
+    <string name="refresh_action_menu_refresh">Refresh</string>
+
+    <!--
+        random_fragment
+    -->
+    <string name="random_fragment_title">You can select categories to get a random recipe</string>
 </resources>

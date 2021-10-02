@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -36,6 +38,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private Category_RvAdapter homeRvAdapter;
     private HomeViewModel viewModel;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
@@ -44,9 +47,18 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         categories = new ArrayList<>();
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_home);
+        swipeRefreshLayout = view.findViewById(R.id.home_swipeRefreshLayout);
 
         viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         viewModel.getUserLiveData().observe(getViewLifecycleOwner(), categoryListUpdateObserver);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
         return view;
     }
 
@@ -60,4 +72,9 @@ public class HomeFragment extends Fragment {
             }
         }
     };
+
+    private void refresh() {
+        viewModel.getUserLiveData().observe(getViewLifecycleOwner(), categoryListUpdateObserver);
+        swipeRefreshLayout.setRefreshing(false);
+    }
 }
