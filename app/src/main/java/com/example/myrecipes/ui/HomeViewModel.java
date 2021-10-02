@@ -15,7 +15,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,12 +25,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-public class HomeViewModel extends ViewModel implements OnCompleteListener<QuerySnapshot>, OnFailureListener {
+public class HomeViewModel extends ViewModel implements OnCompleteListener<QuerySnapshot> {
 
     FirebaseFirestore db;
     MutableLiveData<ArrayList<Category>> userLiveData;
@@ -51,35 +55,30 @@ public class HomeViewModel extends ViewModel implements OnCompleteListener<Query
     }
 
     public void populateList() {
-        db.collection("users").document(FirebaseAuth.getInstance().getUid())
+        Task<QuerySnapshot> taskGetCategories = db.collection("users").document(FirebaseAuth.getInstance().getUid())
                 .collection("categories")
-                .get()
-                .addOnCompleteListener(this::onComplete);
+                .get();
 
-//        Category soup = new Category("Soup");
-//        Category hamburger = new Category("Hamburger");
-//        Category vegetable = new Category("Vegetable");
-//
-//        categories = new ArrayList<>();
-//        categories.add(soup);
-//        categories.add(hamburger);
-//        categories.add(vegetable);
+        while (!taskGetCategories.isComplete()) {
+            System.out.println(taskGetCategories.isComplete());
+        }
 
+        QuerySnapshot querySnapshot = taskGetCategories.getResult();
+        if (!querySnapshot.isEmpty()) {
+            List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+
+            for (DocumentSnapshot document : documents) {
+                categories.add(new Category(document.getId()));
+            }
+        }
     }
 
     @Override
     public void onComplete(@NonNull Task<QuerySnapshot> task) {
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot document : task.getResult()) {
+            for (DocumentSnapshot document : task.getResult()) {
                 categories.add(new Category(document.getId()));
             }
-        } else {
-            System.out.println(task.getException().getStackTrace());
         }
-    }
-
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        System.out.println(e.getStackTrace());
     }
 }

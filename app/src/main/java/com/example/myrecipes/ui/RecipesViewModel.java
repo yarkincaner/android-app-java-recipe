@@ -48,19 +48,28 @@ public class RecipesViewModel extends ViewModel implements OnCompleteListener<Qu
 
     public void populateList() {
 
-        db.collection("users").document(FirebaseAuth.getInstance().getUid())
+        Task<QuerySnapshot> taskGetRecipes = db.collection("users").document(FirebaseAuth.getInstance().getUid())
                 .collection("categories").document(categoryTitle)
-                .collection("recipes").get()
-                .addOnCompleteListener(this);
+                .collection("recipes")
+                .get();
 
-//        Recipe soup = new Recipe("Soup", "My favorite soup", "nibh cras pulvinar mattis nunc sed blandit libero volutpat sed", "");
-//        Recipe hamburger = new Recipe("Hamburger", "My favorite hamburger", "purus in mollis nunc sed id semper risus in hendrerit", "");
-//        Recipe pizza = new Recipe("Pizza", "My favorite pizza", "nisl vel pretium lectus quam id leo in vitae turpis", "");
-//
-//        recipes = new ArrayList<>();
-//        recipes.add(soup);
-//        recipes.add(hamburger);
-//        recipes.add(pizza);
+        while (!taskGetRecipes.isComplete()) {
+            System.out.println(taskGetRecipes.isComplete());
+        }
+
+        QuerySnapshot querySnapshot = taskGetRecipes.getResult();
+
+        if (!querySnapshot.isEmpty()) {
+            List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+
+            for (DocumentSnapshot document : documents) {
+                String title = document.getString("title");
+                String description = document.getString("description");
+                String recipe = document.getString("recipe");
+                String imagePath = document.getString("imagePath");
+                recipes.add(new Recipe(title, description, recipe, imagePath));
+            }
+        }
     }
 
     @Override

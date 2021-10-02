@@ -55,9 +55,11 @@ public class RecipesFragment extends Fragment implements View.OnClickListener {
     private Observer<ArrayList<Recipe>> recipeListUpdateObserver = new Observer<ArrayList<Recipe>>() {
         @Override
         public void onChanged(ArrayList<Recipe> recipes) {
-            recipeRvAdapter = new Recipes_RvAdapter(requireActivity(), recipes);
-            recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
-            recyclerView.setAdapter(recipeRvAdapter);
+            if (recipes.size() > 0) {
+                recipeRvAdapter = new Recipes_RvAdapter(requireActivity(), recipes, bundle.getString("categoryTitle"));
+                recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+                recyclerView.setAdapter(recipeRvAdapter);
+            }
         }
     };
 
