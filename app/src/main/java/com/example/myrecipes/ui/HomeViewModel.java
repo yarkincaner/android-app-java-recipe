@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-public class HomeViewModel extends ViewModel implements OnCompleteListener<QuerySnapshot> {
+public class HomeViewModel extends ViewModel {
 
     FirebaseFirestore db;
     MutableLiveData<ArrayList<Category>> userLiveData;
@@ -42,14 +42,15 @@ public class HomeViewModel extends ViewModel implements OnCompleteListener<Query
         db = FirebaseFirestore.getInstance();
         userLiveData = new MutableLiveData<>();
         categories = new ArrayList<>();
-        init();
     }
 
     public MutableLiveData<ArrayList<Category>> getUserLiveData() {
+        init();
         return userLiveData;
     }
 
     public void init() {
+        categories.clear();
         populateList();
         userLiveData.setValue(categories);
     }
@@ -68,15 +69,6 @@ public class HomeViewModel extends ViewModel implements OnCompleteListener<Query
             List<DocumentSnapshot> documents = querySnapshot.getDocuments();
 
             for (DocumentSnapshot document : documents) {
-                categories.add(new Category(document.getId()));
-            }
-        }
-    }
-
-    @Override
-    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-        if (task.isSuccessful()) {
-            for (DocumentSnapshot document : task.getResult()) {
                 categories.add(new Category(document.getId()));
             }
         }
