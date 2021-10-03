@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import com.example.myrecipes.R;
 import com.example.myrecipes.adapters.Random_RvAdapter;
 import com.example.myrecipes.dto.Category;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,7 +49,9 @@ public class RandomFragment extends Fragment {
 
         getCategories();
         randomRvAdapter = new Random_RvAdapter(requireActivity(), categories);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(requireActivity());
+        recyclerView.setLayoutManager(flexboxLayoutManager);
         recyclerView.setAdapter(randomRvAdapter);
 
         return view;
