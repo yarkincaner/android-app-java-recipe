@@ -26,7 +26,6 @@ public class Random_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public Random_RvAdapter_ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.random_category_tag);
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         }
     }
 

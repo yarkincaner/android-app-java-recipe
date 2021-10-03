@@ -18,12 +18,16 @@
         android:text="@string/random_fragment_title"
         android:textStyle="bold"/>
 
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/random_fragment_rv"
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="4dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/random_fragment_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </com.google.android.flexbox.FlexboxLayout>
 
 </LinearLayout>
