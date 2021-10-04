@@ -19,7 +19,11 @@
         android:id="@+id/bottom_nav_bar_random"
         android:name="com.example.myrecipes.ui.RandomFragment"
         android:label="Random"
-        tools:layout="@layout/random_fragment"/>
+        tools:layout="@layout/random_fragment">
+        <action
+            android:id="@+id/action_bottom_nav_bar_random_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/recipesFragment"

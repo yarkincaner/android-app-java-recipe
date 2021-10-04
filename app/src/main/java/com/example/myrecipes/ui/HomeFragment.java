@@ -18,9 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.myrecipes.MainActivity;
 import com.example.myrecipes.R;
 import com.example.myrecipes.adapters.Category_RvAdapter;
 import com.example.myrecipes.dto.Category;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,12 +34,11 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
-    FirebaseFirestore db;
-    ArrayList<Category> categories;
+    static FirebaseFirestore db;
+    static Singleton singleton;
 
     private RecyclerView recyclerView;
     private Category_RvAdapter homeRvAdapter;
-    private HomeViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,12 +46,13 @@ public class HomeFragment extends Fragment {
         this.setHasOptionsMenu(true);
 
         db = FirebaseFirestore.getInstance();
-        categories = new ArrayList<>();
+        singleton = Singleton.getInstance();
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_home);
         swipeRefreshLayout = view.findViewById(R.id.home_swipeRefreshLayout);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        viewModel.getUserLiveData().observe(getViewLifecycleOwner(), categoryListUpdateObserver);
+        homeRvAdapter = new Category_RvAdapter(requireActivity());
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        recyclerView.setAdapter(homeRvAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -62,19 +64,8 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private Observer<ArrayList<Category>> categoryListUpdateObserver = new Observer<ArrayList<Category>>() {
-        @Override
-        public void onChanged(ArrayList<Category> categories) {
-            if (categories.size() > 0) {
-                homeRvAdapter = new Category_RvAdapter(requireActivity(), categories);
-                recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
-                recyclerView.setAdapter(homeRvAdapter);
-            }
-        }
-    };
-
     private void refresh() {
-        viewModel.getUserLiveData().observe(getViewLifecycleOwner(), categoryListUpdateObserver);
+        MainActivity.init();
         swipeRefreshLayout.setRefreshing(false);
     }
 }

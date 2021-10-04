@@ -68,4 +68,5 @@
         random_fragment
     -->
     <string name="random_fragment_title">You can select categories to get a random recipe</string>
+    <string name="random_fragment_button">GET A RECIPE</string>
 </resources>

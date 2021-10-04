@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myrecipes.R;
 import com.example.myrecipes.dto.Category;
+import com.example.myrecipes.dto.Singleton;
 
 import java.util.ArrayList;
 
 public class Category_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Activity context;
-    ArrayList<Category> categories;
+    static Singleton singleton = Singleton.getInstance();
 
     class Category_RvAdapter_ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
@@ -41,9 +42,8 @@ public class Category_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //        }
     }
 
-    public Category_RvAdapter(Activity context, ArrayList<Category> categories) {
+    public Category_RvAdapter(Activity context) {
         this.context = context;
-        this.categories = categories;
     }
 
     @NonNull
@@ -57,7 +57,7 @@ public class Category_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Category category = categories.get(position);
+        Category category = singleton.getCategories().get(position);
         Category_RvAdapter_ViewHolder viewHolder = (Category_RvAdapter_ViewHolder) holder;
         viewHolder.title.setText(category.getTitle());
 
@@ -74,7 +74,7 @@ public class Category_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return categories.size();
+        return singleton.getCategories().size();
     }
 
 

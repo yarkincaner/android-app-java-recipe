@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.myrecipes.R;
 import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,8 +30,8 @@ import com.google.firebase.storage.StorageReference;
 
 public class RecipeFragment extends Fragment {
 
-    FirebaseFirestore db;
     FirebaseStorage storage;
+    static Singleton singleton;
 
     ImageView repcipeImage;
     TextView title;
@@ -43,35 +44,26 @@ public class RecipeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.recipe_fragment, container, false);
         this.setHasOptionsMenu(true);
 
-        db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-
         repcipeImage = view.findViewById(R.id.recipe_image);
         title = view.findViewById(R.id.recipe_title);
         description = view.findViewById(R.id.recipes_description);
         recipeOfTheDish = view.findViewById(R.id.recipe_recipe);
 
-        getData();
+        storage = FirebaseStorage.getInstance();
+        singleton = Singleton.getInstance();
+        Recipe recipe = singleton.getCategory(getArguments().getString("categoryTitle"))
+                .getRecipe(getArguments().getString("recipeTitle"));
+
+        getData(recipe);
 
         return view;
     }
 
-    private void getData() {
-        Task<DocumentSnapshot> getDocument = db.collection("users").document(FirebaseAuth.getInstance().getUid())
-                .collection("categories").document(getArguments().getString("categoryTitle"))
-                .collection("recipes").document(getArguments().getString("recipeTitle")).get();
-
-        while (!getDocument.isComplete()) {
-            System.out.println(getDocument.isComplete());
-        }
-
-        DocumentSnapshot documentSnapshot = getDocument.getResult();
-        if (documentSnapshot.exists()) {
-            title.setText(documentSnapshot.getString("title"));
-            description.setText(documentSnapshot.getString("description"));
-            recipeOfTheDish.setText(documentSnapshot.getString("recipe"));
-            getImage(documentSnapshot.getString("imagePath"));
-        }
+    private void getData(Recipe r) {
+        title.setText(r.getTitle());
+        description.setText(r.getDescription());
+        recipeOfTheDish.setText(r.getRecipe());
+        getImage(r.getImagePath());
     }
 
     private void getImage(String path) {

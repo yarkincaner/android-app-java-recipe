@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myrecipes.R;
 import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Activity context;
-    ArrayList<Recipe> recipes;
+    static Singleton singleton;
     String categoryTitle;
 
     class Recipe_RvAdapter_ViewHolder extends RecyclerView.ViewHolder {
@@ -45,9 +46,9 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public Recipes_RvAdapter(Activity context, ArrayList<Recipe> recipes, String categoryTitle) {
+    public Recipes_RvAdapter(Activity context, String categoryTitle) {
         this.context = context;
-        this.recipes = recipes;
+        singleton = Singleton.getInstance();
         this.categoryTitle = categoryTitle;
     }
 
@@ -63,10 +64,11 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
 
-        Recipe recipe = recipes.get(position);
+        Recipe recipe = singleton.getCategory(categoryTitle).getRecipes().get(position);
         Recipe_RvAdapter_ViewHolder viewHolder = (Recipe_RvAdapter_ViewHolder) holder;
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        System.out.println(recipe.getImagePath());
         StorageReference imageReference = storageReference.child(recipe.getImagePath());
         final long ONE_MEGABYTE = 1024 * 1024;
         imageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -95,6 +97,6 @@ public class Recipes_RvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return recipes.size();
+        return singleton.getCategory(categoryTitle).getRecipes().size();
     }
 }

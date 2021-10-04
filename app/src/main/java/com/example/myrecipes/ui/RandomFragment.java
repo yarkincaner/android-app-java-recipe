@@ -1,80 +1,94 @@
 package com.example.myrecipes.ui;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.example.myrecipes.R;
 import com.example.myrecipes.adapters.Random_RvAdapter;
 import com.example.myrecipes.dto.Category;
+import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
-public class RandomFragment extends Fragment {
+public class RandomFragment extends Fragment implements View.OnClickListener {
 
     FirebaseFirestore db;
-    ArrayList<Category> categories;
+    static Singleton singleton;
+    List<DocumentSnapshot> documents;
 
     private RecyclerView recyclerView;
     private Random_RvAdapter randomRvAdapter;
+    Button buttonGetRecipe;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.random_fragment, container, false);
         this.setHasOptionsMenu(true);
 
         db = FirebaseFirestore.getInstance();
-        categories = new ArrayList<>();
+        singleton = Singleton.getInstance();
         recyclerView = (RecyclerView) view.findViewById(R.id.random_fragment_rv);
 
-        getCategories();
-        randomRvAdapter = new Random_RvAdapter(requireActivity(), categories);
+        randomRvAdapter = new Random_RvAdapter(requireActivity());
 
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(requireActivity());
         recyclerView.setLayoutManager(flexboxLayoutManager);
         recyclerView.setAdapter(randomRvAdapter);
 
+        buttonGetRecipe = view.findViewById(R.id.random_fragment_button);
+        buttonGetRecipe.setOnClickListener(this::onClick);
+
         return view;
     }
 
-    private void getCategories() {
-        Task<QuerySnapshot> taskGetCategories = db.collection("users").document(FirebaseAuth.getInstance().getUid())
-                .collection("categories").get();
-
-        while (!taskGetCategories.isComplete()) {
-            System.out.println(taskGetCategories.isComplete());
-        }
-
-        QuerySnapshot querySnapshot = taskGetCategories.getResult();
-        if (!querySnapshot.isEmpty()) {
-            List<DocumentSnapshot> documents = querySnapshot.getDocuments();
-
-            for (DocumentSnapshot document : documents) {
-                categories.add(new Category(document.getId()));
-            }
-        } else {
-            System.out.println("User doesn't have any categories");
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.random_fragment_button:
+                getActiveRecipes(v);
         }
     }
 
+    private void getActiveRecipes(View v) {
+        HashMap<Recipe, Category> activeRecipes = new HashMap<>();
+
+        for (int i = 0; i < singleton.getCategories().size(); i++) {
+            if (singleton.getCategories().get(i).isActive()) {
+                for (Recipe recipe : singleton.getCategories().get(i).getRecipes()) {
+                    activeRecipes.put(recipe, singleton.getCategories().get(i));
+                }
+            }
+        }
+        selectRandomRecipe(v, activeRecipes);
+    }
+
+    private void selectRandomRecipe(View v, HashMap<Recipe, Category> activeRecipes) {
+        Random random = new Random();
+        List<Recipe> keys = new ArrayList<>(activeRecipes.keySet());
+        int randomIndex = random.nextInt(keys.size());
+        navigateToRecipeFragment(v, activeRecipes.get(keys.get(randomIndex)).getTitle(),
+                keys.get(randomIndex).getTitle());
+    }
+
+    private void navigateToRecipeFragment(View v, String category, String recipe) {
+        Bundle bundle = new Bundle();
+        bundle.putString("categoryTitle", category);
+        bundle.putString("recipeTitle", recipe);
+        Navigation.findNavController(v).navigate(R.id.action_bottom_nav_bar_random_to_recipeFragment, bundle);
+    }
 }
