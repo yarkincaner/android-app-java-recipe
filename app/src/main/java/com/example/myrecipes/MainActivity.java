@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -17,29 +15,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.myrecipes.ui.HomeFragment;
-import com.example.myrecipes.ui.HomeViewModel;
-import com.example.myrecipes.ui.RecipesFragment;
+import com.example.myrecipes.dto.Category;
+import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.example.myrecipes.ui.dialogs.DialogAddCategoryFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    FirebaseFirestore db;
+    static FirebaseUser currentUser;
+    static FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
+
+    static Singleton singleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +51,14 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        singleton = Singleton.getInstance();
+
+        init();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(myToolbar);
+        //ActionBar ab = getSupportActionBar();
+        //ab.setDisplayShowTitleEnabled(false);
 
         BottomNavigationView navigationView = findViewById(R.id.main_bottom_nav_bar);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -62,6 +67,54 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    public static void init() {
+        singleton.clearArray();
+        Task<QuerySnapshot> taskGetCategories = db.collection("users").document(currentUser.getUid())
+                .collection("categories")
+                .get();
+
+        while (!taskGetCategories.isComplete()) {
+            System.out.println(taskGetCategories.isComplete());
+        }
+
+        QuerySnapshot querySnapshotCategory = taskGetCategories.getResult();
+        if (!querySnapshotCategory.isEmpty()) {
+            List<DocumentSnapshot> documentsCategory = querySnapshotCategory.getDocuments();
+            getRecipes(documentsCategory);
+        }
+    }
+
+    private static void getRecipes(List<DocumentSnapshot> documentsCategory) {
+        for (DocumentSnapshot documentCategory : documentsCategory) {
+            singleton.addCategory(new Category(documentCategory.getId()));
+
+            Task<QuerySnapshot> taskGetRecipes = db.collection("users").document(currentUser.getUid())
+                    .collection("categories").document(documentCategory.getId())
+                    .collection("recipes")
+                    .get();
+
+            while (!taskGetRecipes.isComplete()) {
+                System.out.println(taskGetRecipes.isComplete());
+            }
+
+            QuerySnapshot querySnapshotRecipe = taskGetRecipes.getResult();
+            if (!querySnapshotRecipe.isEmpty()) {
+                Category category;
+                if ((category = (singleton.getCategory(documentCategory.getId()))) != null) {
+                    List<DocumentSnapshot> documentsRecipe = querySnapshotRecipe.getDocuments();
+
+                    for (DocumentSnapshot documentRecipe : documentsRecipe) {
+                        String title = documentRecipe.getString("title");
+                        String description = documentRecipe.getString("description");
+                        String recipeRecipe = documentRecipe.getString("recipe");
+                        String imagePath = documentRecipe.getString("imagePath");
+                        category.addRecipe(new Recipe(title, description, recipeRecipe, imagePath));
+                    }
+                }
+            }
+        }
     }
 
     @Override

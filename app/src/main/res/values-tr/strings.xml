@@ -69,4 +69,5 @@
         random_fragment
     -->
     <string name="random_fragment_title">Rastgele tarif için kategori filtreleyebilirsiniz</string>
+    <string name="random_fragment_button">TARİF AL</string>
 </resources>

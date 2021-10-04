@@ -21,6 +21,7 @@ import android.widget.Button;
 import com.example.myrecipes.R;
 import com.example.myrecipes.adapters.Recipes_RvAdapter;
 import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ public class RecipesFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView recyclerView;
     private Recipes_RvAdapter recipeRvAdapter;
-    private RecipesViewModel mViewModel;
 
     FloatingActionButton fab;
     Bundle bundle;
@@ -43,31 +43,13 @@ public class RecipesFragment extends Fragment implements View.OnClickListener {
         fab = view.findViewById(R.id.recipes_fab);
         bundle = getArguments();
 
-        mViewModel = new ViewModelProvider(requireActivity()).get(RecipesViewModel.class);
-        mViewModel.setCategoryTitle(bundle.getString("categoryTitle"));
-        mViewModel.getUserLiveData().observe(getViewLifecycleOwner(), recipeListUpdateObserver);
-        System.out.println(bundle.toString());
+        recipeRvAdapter = new Recipes_RvAdapter(requireActivity(), bundle.getString("categoryTitle"));
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        recyclerView.setAdapter(recipeRvAdapter);
 
         fab.setOnClickListener(this);
         return view;
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mViewModel.clearArray();
-    }
-
-    private Observer<ArrayList<Recipe>> recipeListUpdateObserver = new Observer<ArrayList<Recipe>>() {
-        @Override
-        public void onChanged(ArrayList<Recipe> recipes) {
-            if (recipes.size() > 0) {
-                recipeRvAdapter = new Recipes_RvAdapter(requireActivity(), recipes, bundle.getString("categoryTitle"));
-                recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
-                recyclerView.setAdapter(recipeRvAdapter);
-            }
-        }
-    };
 
     @Override
     public void onClick(View v) {
