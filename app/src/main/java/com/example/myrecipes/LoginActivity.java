@@ -27,17 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     Button button_signUp;
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        fbUser = mAuth.getCurrentUser();
-        if (fbUser != null) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

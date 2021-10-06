@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.myrecipes.MainActivity;
 import com.example.myrecipes.R;
 import com.example.myrecipes.dto.Recipe;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,8 +36,9 @@ import java.util.UUID;
 
 public class AddRecipeActivity extends AppCompatActivity {
 
-    FirebaseFirestore db;
-    FirebaseStorage storage;
+    static FirebaseFirestore db;
+    static FirebaseStorage storage;
+    static Singleton singleton;
 
     ImageView recipeImage;
     Drawable defaultImageDrawable;
@@ -94,42 +96,51 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+        singleton = Singleton.getInstance();
 
-        String uuid = FirebaseAuth.getInstance().getUid();
-        UUID iuid = UUID.randomUUID(); //Image Unique ID
-        StorageReference storageReference = storage.getReference();
-        StorageReference imageReference = storageReference.child("images/" + uuid + "/" + iuid + ".jpeg");
-
-        recipeImage.setDrawingCacheEnabled(true);
-        recipeImage.buildDrawingCache();
-
-        if (defaultImageDrawable == recipeImage.getDrawable()) {
-            Toast.makeText(AddRecipeActivity.this, R.string.addRecipeActivity_toast_imageNotDetected, Toast.LENGTH_LONG)
+        if (singleton.getCategory(bundle.getString("categoryTitle")).getRecipe(editText_title.getText().toString()) != null) {
+            Toast.makeText(AddRecipeActivity.this, R.string.addRecipeActivity_toast_error, Toast.LENGTH_LONG)
                     .show();
         } else {
-            Bitmap bitmap = ((BitmapDrawable) recipeImage.getDrawable()).getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
+            String uuid = FirebaseAuth.getInstance().getUid();
+            UUID iuid = UUID.randomUUID(); //Image Unique ID
+            StorageReference storageReference = storage.getReference();
+            StorageReference imageReference = storageReference.child("images/" + uuid + "/" + iuid + ".jpeg");
 
-            String title = editText_title.getText().toString();
-            String description = editText_description.getText().toString();
-            String recipeText = editText_recipe.getText().toString();
+            recipeImage.setDrawingCacheEnabled(true);
+            recipeImage.buildDrawingCache();
 
-            Recipe recipe = new Recipe(title, description, recipeText, imageReference.getPath());
+            if (defaultImageDrawable == recipeImage.getDrawable()) {
+                Toast.makeText(AddRecipeActivity.this, R.string.addRecipeActivity_toast_imageNotDetected, Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                Bitmap bitmap = ((BitmapDrawable) recipeImage.getDrawable()).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data = baos.toByteArray();
 
-            UploadTask uploadTask = imageReference.putBytes(data);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    db.collection("users").document(uuid)
-                            .collection("categories").document(bundle.getString("categoryTitle"))
-                            .collection("recipes").document(title)
-                            .set(recipe);
-                    Toast.makeText(AddRecipeActivity.this, R.string.addRecipeActivity_toast_saved, Toast.LENGTH_LONG);
-                    startActivity(new Intent(AddRecipeActivity.this, MainActivity.class));
-                }
-            });
+                String title = editText_title.getText().toString();
+                String description = editText_description.getText().toString();
+                String recipeText = editText_recipe.getText().toString();
+
+                Recipe recipe = new Recipe(title, description, recipeText, imageReference.getPath());
+
+                UploadTask uploadTask = imageReference.putBytes(data);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        db.collection("users").document(uuid)
+                                .collection("categories").document(bundle.getString("categoryTitle"))
+                                .collection("recipes").document(title)
+                                .set(recipe);
+
+                        singleton.getCategory(bundle.getString("categoryTitle")).addRecipe(recipe);
+
+                        Toast.makeText(AddRecipeActivity.this, R.string.addRecipeActivity_toast_saved, Toast.LENGTH_LONG);
+                        startActivity(new Intent(AddRecipeActivity.this, MainActivity.class));
+                    }
+                });
+            }
         }
     }
 }

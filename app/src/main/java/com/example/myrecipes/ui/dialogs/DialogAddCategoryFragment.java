@@ -19,10 +19,13 @@ import android.widget.Toast;
 
 import com.example.myrecipes.R;
 import com.example.myrecipes.dto.Category;
+import com.example.myrecipes.dto.Singleton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -34,6 +37,7 @@ import java.io.File;
 public class DialogAddCategoryFragment extends DialogFragment {
 
     FirebaseFirestore db;
+    static Singleton singleton;
 
     View myView;
     EditText categoryName;
@@ -46,6 +50,7 @@ public class DialogAddCategoryFragment extends DialogFragment {
 
         myView = inflater.inflate(R.layout.fragment_dialog_add_category, null);
         db = FirebaseFirestore.getInstance();
+        singleton = Singleton.getInstance();
 
         builder.setView(myView)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -56,10 +61,21 @@ public class DialogAddCategoryFragment extends DialogFragment {
                         categoryName = myView.findViewById(R.id.dialog_add_category_editTextName);
                         String uuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                        db.collection("users").document(uuid)
-                                .collection("categories")
-                                .document(categoryName.getText().toString())
-                                .set(new Category(categoryName.getText().toString()));
+                        if (singleton.getCategory(categoryName.getText().toString()) != null) {
+                            Toast.makeText(requireActivity(), R.string.fragment_dialog_add_category_error, Toast.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            Category category = new Category(categoryName.getText().toString());
+                            db.collection("users").document(uuid)
+                                    .collection("categories")
+                                    .document(categoryName.getText().toString())
+                                    .set(category);
+
+                            singleton.addCategory(category);
+
+                            Toast.makeText(requireActivity(), R.string.fragment_dialog_add_category_added, Toast.LENGTH_SHORT)
+                                    .show();
+                        }
 
                     }
                 })
