@@ -9,6 +9,7 @@
     <string name="login_button_login">LOGIN</string>
     <string name="login_textView_or">Or</string>
     <string name="login_button_signup">SIGN UP</string>
+    <string name="login_error_empty">Please fill the areas!</string>
 
     <!--
         bottom_nav_bar
@@ -28,6 +29,7 @@
     <string name="register_editText_surname">Surname</string>
     <string name="register_editText_username">Username</string>
     <string name="register_button_save">SAVE</string>
+    <string name="register_error_empty">Please fill the areas!</string>
 
     <!--
         activity_sign_up
@@ -37,6 +39,7 @@
     <string name="signup_editText_confirmPassword">Confirm Password</string>
     <string name="signup_textView_error">Passwords are not same!</string>
     <string name="signup_button_signup">SIGN UP</string>
+    <string name="signup_error_empty">Please fill the areas!</string>
 
     <!--
         fragment_add_recipe

@@ -62,10 +62,19 @@ public class SignUpActivity extends AppCompatActivity {
         button_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editText_password.getText().toString().equals(editText_confirmPassword.getText().toString())) {
-                    signUp();
+                String email = editText_email.getText().toString();
+                String password = editText_password.getText().toString();
+                String confirmPassword = editText_confirmPassword.getText().toString();
+
+                if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                    Toast.makeText(SignUpActivity.this, R.string.signup_error_empty, Toast.LENGTH_LONG)
+                            .show();
                 } else {
-                    textView_Error.setVisibility(View.VISIBLE);
+                    if (editText_password.getText().toString().equals(editText_confirmPassword.getText().toString())) {
+                        signUp();
+                    } else {
+                        textView_Error.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });

@@ -10,6 +10,7 @@
     <string name="login_button_login">GİRİŞ YAP</string>
     <string name="login_textView_or">Veya</string>
     <string name="login_button_signup">KAYDOL</string>
+    <string name="login_error_empty">Lütfen ilgili alanları doldurun!</string>
 
     <!--
         bottom_nav_bar
@@ -29,6 +30,7 @@
     <string name="register_editText_surname">Soyisim</string>
     <string name="register_editText_username">Kullanıcı adı</string>
     <string name="register_button_save">KAYDET</string>
+    <string name="register_error_empty">Lütfen ilgili alanları doldurun!</string>
 
     <!--
         activity_sign_up
@@ -38,6 +40,7 @@
     <string name="signup_editText_confirmPassword">Şifre tekrar</string>
     <string name="signup_textView_error">Şifreler aynı değil!</string>
     <string name="signup_button_signup">KAYDOL</string>
+    <string name="signup_error_empty">Lütfen ilgili alanları doldurun!</string>
 
     <!--
         fragment_add_recipe

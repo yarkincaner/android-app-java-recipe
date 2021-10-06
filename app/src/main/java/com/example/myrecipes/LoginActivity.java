@@ -45,20 +45,25 @@ public class LoginActivity extends AppCompatActivity {
         String email = editText_email.getText().toString();
         String password = editText_password.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            System.out.println("Successfully logged in!");
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG);
-                            toast.show();
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(LoginActivity.this, R.string.login_error_empty, Toast.LENGTH_LONG)
+                    .show();
+        } else {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                System.out.println("Successfully logged in!");
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast toast = Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG);
+                                toast.show();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     public void signUp(View view) {

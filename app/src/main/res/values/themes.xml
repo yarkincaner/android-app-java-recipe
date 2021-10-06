@@ -15,8 +15,8 @@
     </style>
 
     <style name="Theme.MyTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/myBlack</item>
-        <item name="colorPrimaryVariant">@color/myGrey</item>
+        <item name="colorPrimary">@color/myGrey</item>
+        <item name="colorPrimaryVariant">@color/myBlack</item>
         <item name="colorSecondary">@color/myTeal</item>
         <item name="colorOnPrimary">@color/myWhite</item>
     </style>

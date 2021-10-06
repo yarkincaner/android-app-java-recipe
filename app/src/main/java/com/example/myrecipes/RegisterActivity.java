@@ -53,31 +53,36 @@ public class RegisterActivity extends AppCompatActivity {
                 String surname = editText_surname.getText().toString();
                 String username = editText_username.getText().toString();
 
-                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    boolean isAuthenticated = true;
+                if (name.isEmpty() || surname.isEmpty() || username.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, R.string.register_error_empty, Toast.LENGTH_LONG)
+                            .show();
+                } else {
+                    db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        boolean isAuthenticated = true;
 
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (username.equals(document.get("userName"))) {
-                                    Toast toast = Toast.makeText(getApplicationContext(), "Username has already been taken!", Toast.LENGTH_LONG);
-                                    toast.show();
-                                    isAuthenticated = false;
-                                    break;
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    if (username.equals(document.get("userName"))) {
+                                        Toast toast = Toast.makeText(getApplicationContext(), "Username has already been taken!", Toast.LENGTH_LONG);
+                                        toast.show();
+                                        isAuthenticated = false;
+                                        break;
+                                    }
+                                }
+
+                                if (isAuthenticated) {
+                                    User user = new User(username, fbUser.getEmail(), name, surname);
+                                    db.collection("users").document(fbUser.getUid()).set(user);
+
+                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                    startActivity(intent);
                                 }
                             }
-
-                            if (isAuthenticated) {
-                                User user = new User(username, fbUser.getEmail(), name, surname);
-                                db.collection("users").document(fbUser.getUid()).set(user);
-
-                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
