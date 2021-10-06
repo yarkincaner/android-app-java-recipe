@@ -43,6 +43,15 @@ public class Category {
         return null;
     }
 
+    public void deleteRecipe(String title) {
+        for (int i = 0; i < recipes.size(); i++) {
+            if (recipes.get(i).getTitle().equals(title)) {
+                recipes.remove(i);
+                break;
+            }
+        }
+    }
+
     public ArrayList<Recipe> getRecipes() {
         return recipes;
     }

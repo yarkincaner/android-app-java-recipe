@@ -53,10 +53,13 @@
     -->
     <string name="fragment_dialog_add_category_textView_title">Kategori ekle</string>
     <string name="fragment_dialog_add_category_editText_name">Kategori İsmi</string>
+    <string name="fragment_dialog_add_category_error">Böyle bir kategori zaten var!</string>
+    <string name="fragment_dialog_add_category_added">Kategori eklendi!</string>
 
     <!--
         AddRecipeActivity Toast
     -->
+    <string name="addRecipeActivity_toast_error">Bu tarif çoktan kaydedilmiş!</string>
     <string name="addRecipeActivity_toast_saved">Tarif kaydedildi!</string>
     <string name="addRecipeActivity_toast_imageNotDetected">Tarifiniz fotoğrafını çekmelisiniz!</string>
 
@@ -70,4 +73,9 @@
     -->
     <string name="random_fragment_title">Rastgele tarif için kategori filtreleyebilirsiniz</string>
     <string name="random_fragment_button">TARİF AL</string>
+
+    <!--
+        home_fragment searchbar
+    -->
+    <string name="home_fragment_searchbar_hint">Ara</string>
 </resources>

@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--
+    <item
+        android:id="@+id/toolbar_menu_item_search"
+        android:title="@string/home_fragment_searchbar_hint"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    -->
     <item
         android:id="@+id/toolbar_menu_item_logout"
         android:title="@string/toolbar_menu_logout"

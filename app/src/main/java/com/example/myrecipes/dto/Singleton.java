@@ -37,7 +37,20 @@ public class Singleton {
         return categories;
     }
 
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void deleteCategory(String title) {
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getTitle().equals(title)) {
+                categories.remove(i);
+            }
+        }
+    }
+
     public void clearArray() {
         categories.clear();
     }
+
 }

@@ -2,6 +2,7 @@ package com.example.myrecipes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
@@ -9,9 +10,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -53,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         storageReference = storage.getReference();
         singleton = Singleton.getInstance();
 
-        init();
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(myToolbar);
         //ActionBar ab = getSupportActionBar();
@@ -69,57 +70,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
-    public static void init() {
-        singleton.clearArray();
-        Task<QuerySnapshot> taskGetCategories = db.collection("users").document(currentUser.getUid())
-                .collection("categories")
-                .get();
-
-        while (!taskGetCategories.isComplete()) {
-            System.out.println(taskGetCategories.isComplete());
-        }
-
-        QuerySnapshot querySnapshotCategory = taskGetCategories.getResult();
-        if (!querySnapshotCategory.isEmpty()) {
-            List<DocumentSnapshot> documentsCategory = querySnapshotCategory.getDocuments();
-            getRecipes(documentsCategory);
-        }
-    }
-
-    private static void getRecipes(List<DocumentSnapshot> documentsCategory) {
-        for (DocumentSnapshot documentCategory : documentsCategory) {
-            singleton.addCategory(new Category(documentCategory.getId()));
-
-            Task<QuerySnapshot> taskGetRecipes = db.collection("users").document(currentUser.getUid())
-                    .collection("categories").document(documentCategory.getId())
-                    .collection("recipes")
-                    .get();
-
-            while (!taskGetRecipes.isComplete()) {
-                System.out.println(taskGetRecipes.isComplete());
-            }
-
-            QuerySnapshot querySnapshotRecipe = taskGetRecipes.getResult();
-            if (!querySnapshotRecipe.isEmpty()) {
-                Category category;
-                if ((category = (singleton.getCategory(documentCategory.getId()))) != null) {
-                    List<DocumentSnapshot> documentsRecipe = querySnapshotRecipe.getDocuments();
-
-                    for (DocumentSnapshot documentRecipe : documentsRecipe) {
-                        String title = documentRecipe.getString("title");
-                        String description = documentRecipe.getString("description");
-                        String recipeRecipe = documentRecipe.getString("recipe");
-                        String imagePath = documentRecipe.getString("imagePath");
-                        category.addRecipe(new Recipe(title, description, recipeRecipe, imagePath));
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.toolbar_menu, menu);
+
         return true;
     }
 

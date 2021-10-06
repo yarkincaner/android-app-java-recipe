@@ -1,5 +1,7 @@
 package com.example.myrecipes.ui;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.Observer;
 
 import android.app.Activity;
@@ -14,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myrecipes.MainActivity;
 import com.example.myrecipes.R;
+import com.example.myrecipes.SplashScreenActivity;
 import com.example.myrecipes.adapters.Category_RvAdapter;
 import com.example.myrecipes.dto.Category;
 import com.example.myrecipes.dto.Singleton;
@@ -65,7 +70,62 @@ public class HomeFragment extends Fragment {
     }
 
     private void refresh() {
-        MainActivity.init();
+        SplashScreenActivity.init();
         swipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+//        ((SearchView) menu.findItem(R.id.toolbar_menu_item_search)
+//                .getActionView()).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                filter(newText);
+//                return false;
+//            }
+//        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //switch (item.getItemId()) {
+        //    case R.id.toolbar_menu_item_search:
+        //        SearchView searchView = (SearchView) item.getActionView();
+        //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        //            @Override
+        //            public boolean onQueryTextSubmit(String query) {
+        //                return false;
+        //            }
+//
+        //            @Override
+        //            public boolean onQueryTextChange(String newText) {
+        //                filter(newText);
+        //                return false;
+        //            }
+        //        });
+        //}
+        return super.onOptionsItemSelected(item);
+    }
+
+//    private void filter(String text) {
+//        ArrayList<Category> filteredList = new ArrayList<>();
+//
+//        for (Category category : singleton.getCategories()) {
+//            if (category.getTitle().toLowerCase().contains(text.toLowerCase())) {
+//                filteredList.add(category);
+//            }
+//        }
+//
+//        if (filteredList.isEmpty()) {
+//            System.out.println("No data found...");
+//        } else {
+//            homeRvAdapter.filterList(filteredList);
+//        }
+//    }
 }
